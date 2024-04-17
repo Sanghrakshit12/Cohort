@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // const state = [{ "id": 4, "title": "Todo 4", "description": "This is todo 4", "completed": false }, { "id": 5, "title": "Todo 5", "description": "This is todo 5", "completed": false }]
+        let id = 1;
+        function markAsDone(id) {
+            const xx = document.getElementById(id)
+            xx.children[2].innerHTML = "Done!"
+        }
+        function createChild(title, disc, id) {
+            const parent = document.createElement("div");
+            const firstchild = document.createElement("div")
+            firstchild.innerHTML = title;
+            const secondchild = document.createElement("div");
+            secondchild.innerHTML = disc;
+            const thirdchild = document.createElement('button');
+            thirdchild.innerHTML = "Mark as done"
+            thirdchild.addEventListener("click", function () {
+                markAsDone(id);
+            })
+            parent.appendChild(firstchild);
+            parent.appendChild(secondchild);
+            parent.appendChild(thirdchild);
+            parent.setAttribute("id", id)
+            return parent;
+        }
+        function add() {
+            let x = document.getElementById("num1").value;
+            let y = document.getElementById("num2").value;
+            const outerdiv = document.getElementById("container")
+            outerdiv.appendChild(createChild(x, y, id++))
+        }
+            function updatestate(state) {
+            document.getElementById("container").innerHTML = "";
+            for (let i = 0; i < state.length; i++) {
+                const child = createChild(state[i].title, state[i].description, state[i].id)
+                document.getElementById("container").appendChild(child)
+            }
+        }
+        window.setInterval(async function(){
+            const res=await fetch("https://sum-server.100xdevs.com/todos");
+            const data=await res.json();
+            updatestate(data.todos);
+        },5000)
+    </script>
+
+    <input id="num1" type="text" placeholder="title"><br>
+    <hr>
+    <input id="num2" type="text" placeholder="description"><br>
+    <hr>
+    <!-- <button onclick="updatestate(s)">add todo</button> -->
+    <div id="container"></div>
+</body>
+
+</html>
